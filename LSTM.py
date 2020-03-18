@@ -17,27 +17,29 @@ from keras.models import Sequential
 import keras.backend as K
 from keras.callbacks import EarlyStopping
 
-df = pd.read_csv('TXF20112015.csv')
-df = df.drop(columns=['dCode'])
+
+
+df = pd.read_csv('2330.TW.csv')
+df = df.dropna() 
 
 # label欄
-target_columns = pd.DataFrame(df['dClose'])
+target_columns = pd.DataFrame(df['Close'])
 
 # feature欄
-feature_columns = ['dOpen', 'dHighest', 'dLowest', 'dVolume']
+feature_columns = ['Open', 'High', 'Low', 'Volume']
 
 #對featre欄位做正規化，方便訓練
 scaler = MinMaxScaler()
 feature_transform_data = scaler.fit_transform(df[feature_columns])
 feature_transform = pd.DataFrame(columns=feature_columns, data=feature_transform_data, index=df.index)
 
-#要預測n+1天的股價，將2015年的資料命名為X_test、y_test，其他的命名為X_train、y_train
+#要預測n+1天的股價，將2019年1月的資料命名為X_test、y_test，其他的命名為X_train、y_train
 target_columns = target_columns.shift(-1)
-y_test = target_columns[-72900:-1]
-y_train = target_columns[:-72900]
+y_test = target_columns[-22:-1]
+y_train = target_columns[:-22]
 
-X_test = feature_transform[-72900:-1]
-X_train = feature_transform[:-72900]
+X_test = feature_transform[-22:-1]
+X_train = feature_transform[:-22]
 
 X_train =np.array(X_train)
 X_test =np.array(X_test)
